@@ -4,12 +4,12 @@ pd.set_option('display.max_columns', 1000)
 
 file_path = "/workspaces/mat2vec_codespace/main_code/20240322_Supercon_data_allstr_handedited.csv"
 check_words = ["pressure", "gpa", "mbar"]
-export_file_path = "/workspaces/mat2vec_codespace/main_code/final_SC_X_data.csv"
+export_file_path = "/workspaces/mat2vec_codespace/main_code/final_SC_X_data_ver2.csv"
 
 def main():
     SC_data = pd.read_csv(file_path, encoding='utf-8')
-    missing_values = SC_data.isnull().sum()
-    crab_input_data = SC_data.loc[:, ["chemical formula", "Tc (of this sample) recommended", "oxygen", "common formula of oxygen", "measured value of Oxygen content", "title of reference"]].rename(columns={"chemical formula": "formula", "Tc (of this sample) recommended": "Tc"})
+    
+    crab_input_data = SC_data.rename(columns={"chemical formula": "formula", "Tc (of this sample) recommended": "Tc"})
     crab_input_data = crab_input_data[crab_input_data["Tc"].notna()]
     crab_input_data = crab_input_data.iloc[1:, :]
     NonOxide_SC_data = crab_input_data[crab_input_data["oxygen"].isna()].drop(columns=["oxygen", "common formula of oxygen", "measured value of Oxygen content"])
