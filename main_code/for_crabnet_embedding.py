@@ -26,11 +26,11 @@ def main():
     final_Oxide_SC_data = Oxide_SC_data.drop(columns=["oxygen", "common formula of oxygen", "measured value of Oxygen content"])
     final_Oxide_SC_data = final_Oxide_SC_data[final_Oxide_SC_data["value of oxygen"].notna()]
 
-    new_SC_data = pd.concat([final_Oxide_SC_data, NonOxide_SC_data], axis = 0).drop(columns=["value of oxygen"]).reset_index(drop = True)
+    new_SC_data = pd.concat([final_Oxide_SC_data, NonOxide_SC_data], axis = 0).reset_index(drop = True)
 
     new_SC_data["Tc"] = new_SC_data["Tc"].astype(float)
 
-    new_SC_data = new_SC_data.sort_values("Tc", ascending = False)
+    #new_SC_data = new_SC_data.sort_values("Tc", ascending = False)
 
     high_pressure_data = new_SC_data["title of reference"].astype(str).apply(lambda x: any(word.lower() in x.lower() for word in check_words))
     not_high_pressure_data = ~high_pressure_data
