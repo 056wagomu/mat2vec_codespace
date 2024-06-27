@@ -26,8 +26,8 @@ from crabnet.utils.utils import (
 # %%
 X = []
 
-for csv in os.listdir("/workspaces/mat2vec_codespace/main_code/candidate_material_list"):
-    X.append(pd.read_csv("/workspaces/mat2vec_codespace/main_code/candidate_material_list/" + csv))
+for csv in os.listdir("/workspaces/mat2vec_codespace/main_code/candidate_stable_material_list"):
+    X.append(pd.read_csv("/workspaces/mat2vec_codespace/main_code/candidate_stable_material_list" + "/" + csv))
     
 X = pd.concat(X, axis=0)
 
@@ -49,7 +49,7 @@ display(input_df)
 
 
 # %%
-model_state_dict = torch.load("/workspaces/mat2vec_codespace/main_code/models/trained_models/SC_model_2nd_4head.pth")
+model_state_dict = torch.load("/workspaces/mat2vec_codespace/main_code/models/trained_models/SC_model_3rd_4head.pth")
 #print(model_state_dict.keys())
 
 
@@ -75,17 +75,25 @@ y_pred= cbnet.predict(test_df = input_df)
 pred_df = pd.DataFrame(
     {
         "formula": X["new_formula"],
-        "predicter_Tc": y_pred,
+        "predicted_Tc": y_pred,
+        "efermi" : X["efermi"],
+        "band_gap": X["band_gap"]
     }
 )
 
+pred_df = pred_df.sort_values("predicted_Tc", ascending=False)
+
 display(pred_df)
 
+# %%
+#pred_df.to_csv("/workspaces/mat2vec_codespace/main_code/predicted_Tc.csv", index=False)
+
 
 # %%
-pred_df = pred_df.sort_values("predicter_Tc", ascending=False)
-# %%
-display(pred_df.head(100))
-# %%
-pred_df.to_csv("/workspaces/mat2vec_codespace/main_code/predicted_Tc.csv", index=False)
+#pred_df_filterd = pred_df.loc[pred_df["formula"].str.len() < 10, :].head(100)
+pred_df_filterd = pred_df.loc[(pred_df["band_gap"] < 3) & (pred_df["band_gap"] > 0), :].head(100)
+
+display(pred_df_filterd)
+#pred_df_filterd.to_csv("/workspaces/mat2vec_codespace/main_code/predicted_Tc_filterd.csv", index=False)
+
 # %%
