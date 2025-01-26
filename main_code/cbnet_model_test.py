@@ -122,6 +122,43 @@ print(cbnet.model_name)
 
 # %%
 y_pred= cbnet.predict(test_df = input_df_doped)
+print(y_pred)
+
+
+# %%
+#卒論用NN概要表示
+import torch
+from torchviz import make_dot
+from crabnet.crabnet_ import CrabNet  # CrabNet モデルをインポート
+from crabnet.crabnet_2 import CrabNet as CrabNet2
+
+# CrabNet モデルのインスタンスを作成
+model = CrabNet2()
+model.model = SubCrab()
+model.scaler = Scaler(torch.zeros(3))
+model.model.load_state_dict(model_state_dict["weights"])
+
+model.scaler.load_state_dict(model_state_dict["scaler_state"])
+model.model_name = model_state_dict["model_name"]
+print(model.model_name)
+
+print(input_df_doped.head(1))
+
+#入力データはinput_df_doped.head(1)を使用
+
+# モデルの出力を計算
+y_pred = model.forward(input_df_doped.head(1))
+
+print(y_pred)
+
+y_pred = model.predict(input_df_doped.head(1))
+
+print(y_pred)
+
+# 計算グラフを可視化し、PNG 画像として保存
+dot = make_dot(y_pred, params=dict(model.named_parameters()))
+dot.render("crabnet_graph", format="png")
+
 
 
 # %%
